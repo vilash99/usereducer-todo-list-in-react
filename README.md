@@ -13,3 +13,5 @@ In this example, we define a `Index` function that handles the state updates for
 We initialize our state using the `useReducer` hook and pass in our `Index` function and an empty array as the initial state. The `items` array represents our list of todos.
 
 We also use the `useState` hook to manage the input value for adding new todos. The `item` state holds the value of the input field, and we update it using the `setItem` function.
+
+You can check detail explaination in https://www.kushalstudy.com/blog/usereducer-hook-in-react-explained-with-simple-examples/
