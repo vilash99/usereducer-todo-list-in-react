@@ -1,17 +1,72 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import { createRoot } from "react-dom/client";
+import { useState, useReducer } from "react";
+import { reducer } from "./reducer";
+import Modal from "./Modal";
+import "./index.css";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+const defaultState = {
+  items: [],
+  isModalOpen: false,
+  modalContent: "",
+};
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+function Index() {
+  const [item, setItem] = useState("");
+  const [state, dispatch] = useReducer(reducer, defaultState);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (item) {
+      const newItem = { id: new Date().getTime().toString(), item };
+      dispatch({ type: "ADD_ITEM", payload: newItem });
+      setItem("");
+    } else {
+      dispatch({ type: "NO_VALUE" });
+    }
+  };
+
+  const closeModal = () => {
+    dispatch({ type: "CLOSE_MODAL" });
+  };
+
+  return (
+    <React.Fragment>
+      <div className="container">
+        {state.isModalOpen && (
+          <Modal closeModal={closeModal} modalContent={state.modalContent} />
+        )}
+
+        <form onSubmit={handleSubmit} className="form">
+          <div>
+            <input
+              type="text"
+              value={item}
+              onChange={(e) => setItem(e.target.value)}
+            />
+          </div>
+          <button type="submit">Insert</button>
+        </form>
+
+        {state.items.map((value) => {
+          return (
+            <div key={value.id} className="item">
+              <h4>{value.item}</h4>
+              <button
+                onClick={() =>
+                  dispatch({ type: "REMOVE_ITEM", payload: value.id })
+                }
+              >
+                Remove
+              </button>
+            </div>
+          );
+        })}
+      </div>
+    </React.Fragment>
+  );
+}
+
+const root = createRoot(document.getElementById("root"));
+root.render(<Index />);
